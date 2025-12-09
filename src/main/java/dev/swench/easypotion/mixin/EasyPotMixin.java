@@ -64,7 +64,7 @@ public class EasyPotMixin {
     
     private boolean switchToPotionSlot(PlayerEntity player, int targetSlot, boolean isPotionThrown) {
         PlayerInventory inventory = player.getInventory();
-        int selectedSlot = inventory.selectedSlot;
+        int selectedSlot = inventory.getSelectedSlot();
         boolean isTargetSlot = selectedSlot == targetSlot;
         
         if (Config.randomize) {
@@ -91,7 +91,7 @@ public class EasyPotMixin {
                 return false;
             }
             
-            inventory.selectedSlot = randomSlot;
+            inventory.setSelectedSlot(randomSlot);
             return true;
         }
         
@@ -124,12 +124,12 @@ public class EasyPotMixin {
         }
         
         if (highestStrongHealingSlot != -1) {
-            inventory.selectedSlot = highestStrongHealingSlot;
+            inventory.setSelectedSlot(highestStrongHealingSlot);
             return true;
         }
         
         if (highestHealingSlot != -1) {
-            inventory.selectedSlot = highestHealingSlot;
+            inventory.setSelectedSlot(highestHealingSlot);
             return true;
         }
         
@@ -150,7 +150,7 @@ public class EasyPotMixin {
         }
         
         PlayerInventory inventory = player.getInventory();
-        int selectedSlot = inventory.selectedSlot;
+        int selectedSlot = inventory.getSelectedSlot();
         int targetSlot = Config.slot - 1;
         
         if (potionThrown) {
