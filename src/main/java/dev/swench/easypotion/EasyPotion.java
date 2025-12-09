@@ -20,7 +20,7 @@ public class EasyPotion implements ClientModInitializer {
             "key.easypotion.config",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_K,
-            "category.easypotion"
+            KeyBinding.Category.MISC
         ));
         
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
