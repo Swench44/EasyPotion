@@ -22,7 +22,7 @@ public class EasyPotion implements ClientModInitializer {
             GLFW.GLFW_KEY_K,
             "category.easypotion"
         ));
-
+        
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (Config.configKeyBinding.wasPressed()) {
                 if (client.currentScreen == null) {

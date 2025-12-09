@@ -6,7 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import org.spongepowered.asm.mixin.Mixin;
@@ -159,7 +158,7 @@ public class EasyPotMixin {
             return;
         }
         
-        ItemStack mainHandStack = player.getStackInHand(Hand.MAIN_HAND);
+        ItemStack mainHandStack = player.getMainHandStack();
         if (mainHandStack.getItem() == Items.SPLASH_POTION) {
             var potion = PotionUtil.getPotion(mainHandStack);
             if (potion == Potions.STRONG_HEALING || potion == Potions.HEALING) {
