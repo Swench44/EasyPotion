@@ -25,7 +25,7 @@ public class EasyPotMixin {
     private final Random random = new Random();
     
     private boolean switchToPotionSlot(PlayerEntity player, int targetSlot, boolean isPotionThrown) {
-        PlayerInventory inventory = player.inventory;
+        PlayerInventory inventory = player.getInventory();
         int selectedSlot = inventory.selectedSlot;
         boolean isTargetSlot = selectedSlot == targetSlot;
         
@@ -123,7 +123,7 @@ public class EasyPotMixin {
             return;
         }
         
-        PlayerInventory inventory = player.inventory;
+        PlayerInventory inventory = player.getInventory();
         int selectedSlot = inventory.selectedSlot;
         int targetSlot = Config.slot - 1;
         
