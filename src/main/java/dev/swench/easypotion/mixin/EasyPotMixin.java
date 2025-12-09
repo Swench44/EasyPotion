@@ -2,12 +2,13 @@ package dev.swench.easypotion.mixin;
 
 import dev.swench.easypotion.Config;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,6 +24,44 @@ public class EasyPotMixin {
     private boolean shouldCheck = true;
     private final Random random = new Random();
     
+    private boolean isHealingPotion(ItemStack stack) {
+        if (!(stack.getItem() == Items.SPLASH_POTION)) {
+            return false;
+        }
+        
+        var potionContents = stack.get(DataComponentTypes.POTION_CONTENTS);
+        if (potionContents == null) {
+            return false;
+        }
+        
+        for (StatusEffectInstance effectInstance : potionContents.getEffects()) {
+            if (effectInstance.getEffectType() == StatusEffects.INSTANT_HEALTH && effectInstance.getAmplifier() == 0) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private boolean isStrongHealingPotion(ItemStack stack) {
+        if (!(stack.getItem() == Items.SPLASH_POTION)) {
+            return false;
+        }
+        
+        var potionContents = stack.get(DataComponentTypes.POTION_CONTENTS);
+        if (potionContents == null) {
+            return false;
+        }
+        
+        for (StatusEffectInstance effectInstance : potionContents.getEffects()) {
+            if (effectInstance.getEffectType() == StatusEffects.INSTANT_HEALTH && effectInstance.getAmplifier() >= 1) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     private boolean switchToPotionSlot(PlayerEntity player, int targetSlot, boolean isPotionThrown) {
         PlayerInventory inventory = player.getInventory();
         int selectedSlot = inventory.selectedSlot;
@@ -34,13 +73,10 @@ public class EasyPotMixin {
             
             for (int i = 0; i < 9; i++) {
                 ItemStack stack = inventory.getStack(i);
-                if (stack.getItem() == Items.SPLASH_POTION) {
-                    var potion = PotionUtil.getPotion(stack);
-                    if (potion == Potions.STRONG_HEALING) {
-                        strongHealingSlots.add(i);
-                    } else if (potion == Potions.HEALING) {
-                        healingSlots.add(i);
-                    }
+                if (isStrongHealingPotion(stack)) {
+                    strongHealingSlots.add(i);
+                } else if (isHealingPotion(stack)) {
+                    healingSlots.add(i);
                 }
             }
             
@@ -64,35 +100,26 @@ public class EasyPotMixin {
         
         for (int i = 8; i >= 0; i--) {
             ItemStack stack = inventory.getStack(i);
-            if (stack.getItem() == Items.SPLASH_POTION) {
-                var potion = PotionUtil.getPotion(stack);
-                if (potion == Potions.STRONG_HEALING) {
-                    if (highestStrongHealingSlot == -1) {
-                        highestStrongHealingSlot = i;
-                    }
-                } else if (potion == Potions.HEALING && highestHealingSlot == -1) {
-                    highestHealingSlot = i;
+            if (isStrongHealingPotion(stack)) {
+                if (highestStrongHealingSlot == -1) {
+                    highestStrongHealingSlot = i;
                 }
+            } else if (isHealingPotion(stack) && highestHealingSlot == -1) {
+                highestHealingSlot = i;
             }
         }
         
         if (!isTargetSlot && !isPotionThrown && highestStrongHealingSlot != -1) {
             ItemStack currentStack = inventory.getStack(selectedSlot);
-            if (currentStack.getItem() == Items.SPLASH_POTION) {
-                var currentPotion = PotionUtil.getPotion(currentStack);
-                if (currentPotion == Potions.STRONG_HEALING && selectedSlot == highestStrongHealingSlot) {
-                    return false;
-                }
+            if (isStrongHealingPotion(currentStack) && selectedSlot == highestStrongHealingSlot) {
+                return false;
             }
         }
         
         if (!isTargetSlot && !isPotionThrown && highestStrongHealingSlot == -1 && highestHealingSlot != -1) {
             ItemStack currentStack = inventory.getStack(selectedSlot);
-            if (currentStack.getItem() == Items.SPLASH_POTION) {
-                var currentPotion = PotionUtil.getPotion(currentStack);
-                if (currentPotion == Potions.HEALING && selectedSlot == highestHealingSlot) {
-                    return false;
-                }
+            if (isHealingPotion(currentStack) && selectedSlot == highestHealingSlot) {
+                return false;
             }
         }
         
@@ -159,11 +186,8 @@ public class EasyPotMixin {
         }
         
         ItemStack mainHandStack = player.getMainHandStack();
-        if (mainHandStack.getItem() == Items.SPLASH_POTION) {
-            var potion = PotionUtil.getPotion(mainHandStack);
-            if (potion == Potions.STRONG_HEALING || potion == Potions.HEALING) {
-                potionThrown = true;
-            }
+        if (isHealingPotion(mainHandStack) || isStrongHealingPotion(mainHandStack)) {
+            potionThrown = true;
         }
     }
 }
