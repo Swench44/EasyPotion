@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "easypotion",
+  "version": "${version}",
+  "name": "EasyPotion",
+  "description": "Easy Potion is a Minecraft mod that lets you use health potions faster and more easily.",
+  "authors": [
+    "Swench"
+  ],
+  "contact": {
+    "sources": "https://github.com/Swench44/EasyPotion"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/easypotion/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.swench.easypotion.EasyPotion"
+    ],
+    "modmenu": [
+      "dev.swench.easypotion.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "easypotion.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": "1.16.5",
+    "cloth-config2": "*"
+  }
+}

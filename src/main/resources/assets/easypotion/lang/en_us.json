@@ -1,0 +1,15 @@
+{
+  "key.easypotion.config": "Open Potion Config",
+  "category.easypotion": "EasyPotion",
+  "easypotion.config.title": "Easy Potion Configuration",
+  "easypotion.config.category.general": "General",
+  "easypotion.config.enabled": "Enabled",
+  "easypotion.config.enabled.tooltip": "Enable or disable the EasyPot mod",
+  "easypotion.config.slot": "Target Slot",
+  "easypotion.config.slot.tooltip": "The slot number (1-9) to use for pot switching",
+  "easypotion.config.randomize": "Randomize",
+  "easypotion.config.randomize.tooltip": "Randomly select pot slots instead of using priority order",
+  "easypotion.config.onlyOnThrow": "Only on Throw",
+  "easypotion.config.onlyOnThrow.tooltip": "Only switch slots when throwing a potion, disable slot selection check"
+}
+
